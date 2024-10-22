@@ -25,7 +25,7 @@ def doCorrection(filename, filterSize, noisePercent):
     meanImage = doMean(corruptImage, filterSize)
 
     imageArray = [image, corruptImage, medianImage, meanImage]
-    titles = ["Original", "Corrupted", "Median", "Mean"]
+    titles = ["Original Image", "Corrupted Image", "Median Filtered", "Averaging Filtered"]
     showImages(imageArray, titles)
 
 def doMedian(image, filterSize):

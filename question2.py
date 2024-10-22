@@ -96,7 +96,7 @@ def doGaussian(filename, maskSize):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Image Converter')
-    parser.add_argument('-f','--image_file', type=str, default = "sf.png", help='path to image file')
+    parser.add_argument('-f','--image_file', type=str, default = "boat.png", help='path to image file')
     parser.add_argument('-s','--filterSize', type=int, default = 7, help='n by n for the mask sizes')
     args = parser.parse_args()
     runFunction(args.image_file)

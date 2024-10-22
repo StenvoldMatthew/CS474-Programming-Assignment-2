@@ -6,6 +6,12 @@ import matplotlib.pyplot as plt
 def pad_image(image, pad_height, pad_width):
     return np.pad(image, ((pad_height, pad_height), (pad_width, pad_width)), mode='constant')
 
+def normalize(image):
+    min_val = np.min(image)
+    max_val = np.max(image)
+    norm_img = 1+((image - min_val) / (max_val - min_val+1e-8))
+    return norm_img.astype(np.float32)
+
 def showImages(images, titles):
     # Determine the number of images
     num_images = len(images)
@@ -62,12 +68,16 @@ def doSharpen(filename):
     images.append(getImage(image, sobel_gy))
     titles.append("Sobel Gy")
     images.append(np.sqrt(images[4]**2 + images[5]**2))
-    titles.append("Prewitt Magnitude")
+    titles.append("Sobel Magnitude")
 
     images.append(getImage(image, laplacian_mask))
     titles.append("Laplacian")
 
     showImages(images, titles)
+    images[0] = np.zeros(image.shape)
+    for i in range(len(images)):
+        images[i] = normalize(images[i])
+    showImages(images * image, titles)
 
 def getImage(image, array):
     mask = array

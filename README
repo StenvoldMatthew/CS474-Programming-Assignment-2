@@ -1,0 +1,30 @@
+To run this code, you will need the following libraries installed:
+  numpy
+  argparse
+  PIL
+  matplotlib
+
+The flag "-f (filename)" can be used on any of these programs to change which file you want it to run on. 
+
+question1.py does image correlation as told in question 1. You can run the program using the following prompt in the terminal:
+    python3 question1.py
+
+    There is functionality to change the image, mask, and mask size, which can be run using the following:
+
+    python3 question1.py -f (filename) -m (maskfile) -s (masksize)
+
+    Masksize is a multiplies the mask in each direction. By default it is 1
+
+question2.py does Smoothing as told in question 2. You can run the program using the following prompt in the terminal:
+    python3 question2.py -f lenna.png
+    python3 question2.py -f (filename) -s (filterSize)
+
+If '-f' is ommitted, it will automatically run on the "sf.png" file.
+
+question3.py does Median Filtering as told in question 3. You can run the program using the following prompt in the terminal:
+    python3 question3.py -f boat.png
+    python3 question3.py -f (filename) -s (filterSize) -n (noisePercent)
+
+question4.py does Sharpening as told in question 4. You can run the program using the following prompt in the terminal:
+    python3 question3.py -f lenna.png
+    python3 question3.py -f (filename)

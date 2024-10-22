@@ -3,13 +3,67 @@ import argparse
 from PIL import Image
 import matplotlib.pyplot as plt
 
+def pad_image(image, pad_height, pad_width):
+    return np.pad(image, ((pad_height, pad_height), (pad_width, pad_width)), mode='constant')
 
+def showImages(images, titles):
+    fig, axes = plt.subplots(1, len(images), figsize=(15, 5))
+    for ax, img, title in zip(axes, images, titles):
+        ax.imshow(img, cmap='gray', vmin=0, vmax=255)
+        ax.set_title(title)
+        ax.axis('off')
+    plt.show()
 
-def doGradient():
-    pass
+def doSharpen(filename):
+    # Define arrays
+    prewitt_gx = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]], dtype=np.float32)
+    prewitt_gy = np.array([[1, 1, 1], [0, 0, 0], [-1, -1, -1]], dtype=np.float32)
+
+    sobel_gx = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=np.float32)
+    sobel_gy = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=np.float32)
+
+    laplacian_mask = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]], dtype=np.float32)
+
+    image = np.array(Image.open(filename).convert('L'), dtype=np.float32)
+
+    images = [np.zeros(image.shape)]
+    titles = ["Original"]
+
+    images.append(getImage(image, prewitt_gx))
+    titles.append("Prewitt Gx")
+    images.append(getImage(image, prewitt_gy))
+    titles.append("Prewitt Gy")
+    images.append(np.sqrt(images[1]**2 + images[2]**2))
+    titles.append("Prewitt Magnitude")
+
+    images.append(getImage(image, sobel_gx))
+    titles.append("Sobel Gx")
+    images.append(getImage(image, sobel_gy))
+    titles.append("Sobel Gy")
+    images.append(np.sqrt(images[4]**2 + images[5]**2))
+    titles.append("Prewitt Magnitude")
+
+    images.append(getImage(image, laplacian_mask))
+    titles.append("Laplacian")
+
+    showImages(images, titles)
+    showImages(images + image, titles)
+
+def getImage(image, array):
+    mask = array
+    maskSize = mask.shape[1]
+    paddedImage = pad_image(image, maskSize // 2, maskSize // 2)
+    outputImage = np.zeros_like(image)
+
+    for i in range(image.shape[0]):
+        for j in range(image.shape[1]):
+            region = paddedImage[i:i + maskSize, j:j + maskSize]
+            outputImage[i, j] = np.sum(region * mask)
+
+    return outputImage
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Image Converter')
-    parser.add_argument('-f','--image_file', type=str, default = "peppers.png", help='path to image file')
+    parser.add_argument('-f','--image_file', type=str, default = "lenna.png", help='path to image file')
     args = parser.parse_args()
-    doCorrrelation(args.image_file)
+    doSharpen(args.image_file)

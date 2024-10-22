@@ -7,11 +7,32 @@ def pad_image(image, pad_height, pad_width):
     return np.pad(image, ((pad_height, pad_height), (pad_width, pad_width)), mode='constant')
 
 def showImages(images, titles):
-    fig, axes = plt.subplots(1, len(images), figsize=(15, 5))
+    # Determine the number of images
+    num_images = len(images)
+    
+    # Calculate number of rows and columns
+    if num_images > 4:
+        num_rows = (num_images // 4) + (num_images % 4 > 0)  # Add an extra row if there are leftovers
+        num_cols = 4
+    else:
+        num_rows = 1
+        num_cols = num_images
+
+    # Create subplots with the calculated rows and columns
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=(15, num_rows * 5))
+    axes = axes.flatten()  # Flatten the axes array for easy indexing
+
+    # Plot each image
     for ax, img, title in zip(axes, images, titles):
         ax.imshow(img, cmap='gray', vmin=0, vmax=255)
         ax.set_title(title)
         ax.axis('off')
+
+    # Hide any unused subplots
+    for i in range(num_images, len(axes)):
+        axes[i].axis('off')
+
+    plt.tight_layout()  # Adjust layout to prevent overlap
     plt.show()
 
 def doSharpen(filename):
@@ -26,7 +47,7 @@ def doSharpen(filename):
 
     image = np.array(Image.open(filename).convert('L'), dtype=np.float32)
 
-    images = [np.zeros(image.shape)]
+    images = [image]
     titles = ["Original"]
 
     images.append(getImage(image, prewitt_gx))
@@ -47,7 +68,6 @@ def doSharpen(filename):
     titles.append("Laplacian")
 
     showImages(images, titles)
-    showImages(images + image, titles)
 
 def getImage(image, array):
     mask = array

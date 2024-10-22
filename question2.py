@@ -57,8 +57,8 @@ def getGaussianFilter(size):
     return npArray / np.sum(npArray)
         
 def runFunction(filename):
-    titles = []
-    images = []
+    images = [np.array(Image.open(filename).convert('L'), dtype=np.float32)]
+    titles = ["Original"]
     for i in [7, 15]:
         images.append(doGaussian(filename, i))
         titles.append(f"Gaussian Smoothing {i}x{i}")
@@ -69,7 +69,7 @@ def runFunction(filename):
         
 def doAve(filename, maskSize):
     mask = getAveFilter(maskSize)
-    image = np.array(Image.open(filename).convert('L'))
+    image = np.array(Image.open(filename).convert('L'), dtype=np.float32)
     paddedImage = pad_image(image, maskSize // 2, maskSize // 2)
     output_image = np.zeros_like(image)
     
@@ -82,7 +82,7 @@ def doAve(filename, maskSize):
 
 def doGaussian(filename, maskSize):
     mask = getGaussianFilter(maskSize)
-    image = np.array(Image.open(filename).convert('L'))
+    image = np.array(Image.open(filename).convert('L'), dtype=np.float32)
     paddedImage = pad_image(image, maskSize // 2, maskSize // 2)
     output_image = np.zeros_like(image)
     

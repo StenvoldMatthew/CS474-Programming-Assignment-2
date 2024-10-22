@@ -20,10 +20,12 @@ def showImages(images, titles):
         ax.axis('off')
     plt.show()
 
-def doCorrrelation(imageFile, maskFile):
+def doCorrrelation(imageFile, maskFile, maskSize):
     # Open Files as np arrays
     image = np.array((Image.open(imageFile)).convert('L'), dtype=np.float32)
     mask = np.array((Image.open(maskFile)).convert('L'), dtype=np.float32)
+    # Resize mask
+    mask = np.array(Image.fromarray(mask).resize((int(mask.shape[1] * maskSize), int(mask.shape[0] * maskSize)), Image.BICUBIC))
 
     img_height, img_width = image.shape
     mask_height, mask_width = mask.shape
@@ -46,12 +48,13 @@ def doCorrrelation(imageFile, maskFile):
 
 
     imageArray = [image, mask, result_norm]
-    titles = ["1", "2", "3"]
+    titles = ["Image", "Mask", "Correlation Image"]
     showImages(imageArray, titles)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Image Converter')
     parser.add_argument('-f','--image_file', type=str, default = "Image.pgm", help='path to image file')
     parser.add_argument('-m','--mask_file', type=str, default = "Pattern.pgm", help='path to mask file')
+    parser.add_argument('-s','--mask_size', type=float, default = 1, help='size of the mask scalar')
     args = parser.parse_args()
-    doCorrrelation(args.image_file, args.mask_file)
+    doCorrrelation(args.image_file, args.mask_file, args.mask_size)
